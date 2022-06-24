@@ -132,7 +132,7 @@ class _RegisterState extends State<Register> {
           TextButton(
             onPressed: () {
               //  Navigator.push(context, MaterialPageRoute(builder: (context) => OtpPage()));
-              AuthProvider().register(name.text, email.text,password.text, 'BD', context);
+              AuthProvider().register(name.text, email.text,password.text, context);
             },
             child: const Text(
               'Next',

@@ -98,7 +98,7 @@ class _LoginState extends State<Login> {
                   primary: Colors.white,
                   textStyle: const TextStyle(fontSize: 20)),
               onPressed: () {
-                AuthProvider().login(emailController.text, passController.text);
+                AuthProvider().getToken(emailController.text, passController.text);
               },
               child: const Text('Sign in')),
         ],
