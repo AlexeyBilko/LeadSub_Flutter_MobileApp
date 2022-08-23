@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:leadsub_flutter_mobileapp/provider/auth.dart';
-import 'package:leadsub_flutter_mobileapp/register.dart';
+import 'package:leadsub_flutter_mobileapp/pages/register.dart';
+
+import '../api_services/AccountService.dart';
+import '../model/User.dart';
+import 'menu/menu.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key, this.title}) : super(key: key);
@@ -14,6 +17,10 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passController = TextEditingController();
+
+  String errorMessage="";
+  AccountService accountService=AccountService();
+
 
   Widget _entryEmailField(String title) {
     return Container(
@@ -97,15 +104,20 @@ class _LoginState extends State<Login> {
                   padding: const EdgeInsets.all(16.0),
                   primary: Colors.white,
                   textStyle: const TextStyle(fontSize: 20)),
-              onPressed: () {
-                AuthProvider().login(emailController.text, passController.text);
+              onPressed: ()async {
+                var res=await accountService.login(emailController.text, passController.text);
+                if (res['status'] == 400) {
+                  _alertDialogErrorMessage("Невірний логін або пароль");
+                }
+                else {
+                  Navigator.pushNamedAndRemoveUntil(context, '/listSubPages', (route) => false);
+                }
               },
               child: const Text('Sign in')),
         ],
       ),
     );
   }
-
   Widget _createAccountLabel() {
     return InkWell(
       onTap: () {
@@ -158,6 +170,22 @@ class _LoginState extends State<Login> {
       ],
     );
   }
+
+  void _alertDialogErrorMessage(String message)
+  {
+    showDialog(context: context, builder: (BuildContext context){
+      return AlertDialog(
+        title: const Text('Невірний логін або пароль',
+          style: TextStyle(color: Colors.red), ),
+        actions: [
+          ElevatedButton(onPressed: (){
+            Navigator.of(context).pop();
+          }, child: const Text('ОК'))
+        ],
+      );
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {

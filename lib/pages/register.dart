@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:leadsub_flutter_mobileapp/provider/auth.dart';
+import 'package:leadsub_flutter_mobileapp/api_services/AccountService.dart';
+import 'package:leadsub_flutter_mobileapp/model/apiRequestModels/registrationModel.dart';
+
 
 class Register extends StatefulWidget {
   const Register({Key? key}) : super(key: key);
@@ -11,10 +13,13 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
+
+  final AccountService _accountService=AccountService();
+
   final TextEditingController name = TextEditingController();
   final TextEditingController email = TextEditingController();
   final TextEditingController password = TextEditingController();
-  final TextEditingController countryCode = TextEditingController();
+  final TextEditingController confirmPassword = TextEditingController();
 
 
   Widget _entryNameField(String title, {bool isPassword = false}) {
@@ -104,6 +109,39 @@ class _RegisterState extends State<Register> {
       ),
     );
   }
+  Widget _confirmPasswordField(String title, {bool isPassword = false}){
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            title,
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          //name textfield
+          Container(
+            child: TextField(
+              controller: confirmPassword,
+              obscureText: isPassword,
+              decoration: const InputDecoration(
+                  hintText: "8 contains with 1 char and 1 digit",
+                  border: InputBorder.none,
+                  fillColor: Color(0xfff3f3f4),
+                  filled: true),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+
+
+
 
   Widget _submitButton() {
     return Container(
@@ -130,9 +168,13 @@ class _RegisterState extends State<Register> {
       child: Column(
         children: [
           TextButton(
-            onPressed: () {
+            onPressed: ()async {
               //  Navigator.push(context, MaterialPageRoute(builder: (context) => OtpPage()));
-              AuthProvider().register(name.text, email.text,password.text, 'BD', context);
+              RegistrationModel model=RegistrationModel(email: email.text, userName: name.text, password:password.text, confirmPassword: confirmPassword.text);
+              bool res=await _accountService.sendVeryficationCode(model);
+              if(res) {
+                Navigator.pushNamed(context, '/confirmEmail');
+              }
             },
             child: const Text(
               'Next',
@@ -166,7 +208,7 @@ class _RegisterState extends State<Register> {
           _entryNameField("Name"),
           _entryEmailField("Email"),
           _entryPasswordField("Password", isPassword: true),
-          _entryPasswordField("Confirmed Password", isPassword: true),
+          _confirmPasswordField("Confirmed Password", isPassword: true),
         ],
       ),
     );
