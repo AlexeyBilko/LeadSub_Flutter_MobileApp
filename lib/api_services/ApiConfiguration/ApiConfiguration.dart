@@ -4,7 +4,7 @@ class ApiConfig{
     static const String getTokenPath="/token";
     static const String registrationPath="/registration";
     static const String confirmEmailPath="/confirmEmail";
-
+    static const String logout="/logout";
     static const String subPagesPath="/subpage";
     static const String apiPath="/api";
 }

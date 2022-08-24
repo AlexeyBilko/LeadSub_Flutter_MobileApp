@@ -116,6 +116,7 @@ class Menu {
             ),
             onTap: () {
               Navigator.pop(context);
+              Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => true);
             },
             style: ListTileStyle.drawer,
           )
