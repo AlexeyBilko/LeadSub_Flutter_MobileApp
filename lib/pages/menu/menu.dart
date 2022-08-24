@@ -67,7 +67,7 @@ class Menu {
             selectedTileColor: fromCssColor('#3362DB'),
             onTap: () {
               Navigator.pop(context);
-
+              Navigator.pushNamedAndRemoveUntil(context, '/account', (route) => true);
             },
           ),
 
