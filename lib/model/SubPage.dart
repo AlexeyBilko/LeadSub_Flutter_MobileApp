@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class SubPage {
   int?id;
   String? instagramLink;
@@ -51,6 +53,29 @@ class SubPage {
       creationDate:DateTime.parse(json["creationDate"]),
       userId:json["userId"]
   );
+  String toJson(){
+    Map map={
+      "id":id,
+      "instagramLink":instagramLink,
+      "materialLink":materialLink,
+      "title":title,
+      "avatar":avatar,
+      "header":header,
+      "description":description,
+      "getButtonTitle":getButtonTitle,
+
+      "mainImage":mainImage,
+      "successDescription":successDescription,
+      "successButtonTitle":successButtonTitle,
+
+      "subscriptionsCount":subscriptionsCount,
+      "viewsCount":viewsCount,
+      "creationDate":creationDate,
+
+      "userId":userId
+    };
+    return jsonEncode(map);
+  }
 
   String creationDateToString(){
     return '${creationDate!.day}.${creationDate!.month}.${creationDate!.year}';

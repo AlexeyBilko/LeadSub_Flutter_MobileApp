@@ -10,14 +10,41 @@ import 'ApiConfiguration/ApiConfiguration.dart';
 
 class SubPagesService extends ChangeNotifier{
 
+  Future<SubPage>createSubPage(SubPage subPage)async
+  {
+    final prefs = await SharedPreferences.getInstance();
+    String? token=prefs.getString('access_token');
+    String userId="";
+    if(token!=null) {
+      String subPagesPath = "${ApiConfig.apiPath}${ApiConfig
+          .subPagesPath}/Add";
+      var url = Uri.http(ApiConfig.baseUrl, subPagesPath);
+      var body=subPage.toJson();
+      var httpResponse = await http.post(
+        url,
+        headers: {
+          "Content-Type":"application/json",
+          "Access-Control-Allow-Origin": "*",
+          "Authorization": "Bearer $token"
+        },
+        body: body);
+      if(httpResponse.statusCode==200)
+      {
+          final jsonResponse=jsonDecode(httpResponse.body);
+          subPage.id=jsonResponse['id'];
+      }
+      }
+    return subPage;
+  }
 
-  Future<List<SubPage>> getSubPages(String userId)async{
+
+  Future<List<SubPage>> getSubPages()async{
 
     final prefs = await SharedPreferences.getInstance();
     String? token=prefs.getString('access_token');
     if(token!=null) {
       String subPagesPath = "${ApiConfig.apiPath}${ApiConfig
-          .subPagesPath}/$userId";
+          .subPagesPath}";
       var url = Uri.http(ApiConfig.baseUrl, subPagesPath);
       var httpResponse = await http.get(
         url,

@@ -91,6 +91,7 @@ class Menu {
             ),
             onTap: () {
               Navigator.pop(context);
+              Navigator.pushNamedAndRemoveUntil(context, '/addSubPage', (route) => true);
             },
           ),
           ListTile(

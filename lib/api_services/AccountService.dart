@@ -66,10 +66,11 @@ class AccountService extends ChangeNotifier{
               "Access-Control-Allow-Origin": "*"
             },);
           if (httpResponse.statusCode == 200) {
-            String email=prefs.getString('Email')!;
-            String password=prefs.getString('Password')!;
+            final jsonResponse = jsonDecode(httpResponse.body);
             prefs.clear();
-            return await login(email,password);
+            prefs.setString('access_token', jsonResponse['access_token']);
+            prefs.setString('userId', jsonResponse['userId']);
+            return jsonResponse;
           }
         }
         return {};
@@ -93,12 +94,13 @@ class AccountService extends ChangeNotifier{
             "Access-Control-Allow-Origin": "*"
           },);
         if(httpResponse.body.isNotEmpty) {
-          final jsonResponse = jsonDecode(httpResponse.body);
+              final jsonResponse = jsonDecode(httpResponse.body);
               final prefs = await SharedPreferences.getInstance();
               prefs.setString('access_token', jsonResponse['access_token']);
+              prefs.setString('userId', jsonResponse['userId']);
               print(prefs.getString('access_token'));
 
-          return jsonResponse;
+              return jsonResponse;
         }
         return {};
     }

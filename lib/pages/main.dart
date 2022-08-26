@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:leadsub_flutter_mobileapp/pages/addSubPage.dart';
 import 'package:leadsub_flutter_mobileapp/pages/confirmEmail.dart';
 import 'package:leadsub_flutter_mobileapp/pages/register.dart';
 import 'package:leadsub_flutter_mobileapp/pages/login.dart';
@@ -21,7 +22,8 @@ class MyApp extends StatelessWidget {
           '/listSubPages':(context)=>const ListSubPages(),
           '/login':(context)=>const Login(),
           '/register':(context)=>const Register(),
-          '/confirmEmail':(context)=>const ConfirmEmail()
+          '/confirmEmail':(context)=>const ConfirmEmail(),
+          '/addSubPage':(context)=>const AddSubPage()
         },
     );
   }

@@ -28,7 +28,7 @@ class _ListSubPagesState extends State<ListSubPages>{
     late final StreamController<List<SubPage>> controller;
     controller = StreamController<List<SubPage>>(
       onListen: () async {
-        List<SubPage>subPages=await _subPagesService.getSubPages("d7365454-1d2b-4892-bd28-b6ad1caa135f");
+        List<SubPage>subPages=await _subPagesService.getSubPages();
         controller.add(subPages);
         await controller.close();
       },
