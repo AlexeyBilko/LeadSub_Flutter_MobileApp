@@ -67,7 +67,7 @@ class Menu {
             selectedTileColor: fromCssColor('#3362DB'),
             onTap: () {
               Navigator.pop(context);
-
+              Navigator.pushNamedAndRemoveUntil(context, '/account', (route) => true);
             },
           ),
 
@@ -117,6 +117,7 @@ class Menu {
             ),
             onTap: () {
               Navigator.pop(context);
+              Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => true);
             },
             style: ListTileStyle.drawer,
           )

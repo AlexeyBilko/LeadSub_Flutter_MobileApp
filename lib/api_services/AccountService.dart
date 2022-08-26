@@ -109,4 +109,21 @@ class AccountService extends ChangeNotifier{
       access_token= prefs.getString('access_token');
     }
 
+   Future<Map<String, dynamic>> logout() async{
+     var url=Uri.http(ApiConfig.baseUrl,ApiConfig.apiPath + ApiConfig.accountControllerPath + ApiConfig.logout);
+     Map dictionary = {};
+     var body=jsonEncode(dictionary);
+     var httpResponse= await http.post(
+       url,
+       body: body,
+       headers: {
+         "Content-Type": "application/json",
+         "accept": "application/json",
+         "Access-Control-Allow-Origin": "*"
+       },);
+       final jsonResponse = jsonDecode(httpResponse.body);
+       final prefs = await SharedPreferences.getInstance();
+       prefs.remove('access_token');
+       return {};
+   }
 }
