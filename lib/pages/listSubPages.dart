@@ -88,14 +88,16 @@ class _ListSubPagesState extends State<ListSubPages>{
         borderRadius: BorderRadius.circular(20.0),
       ),
       margin: const EdgeInsets.all(15),
-      color:fromCssColor('#F6F6F6'),
+      color: fromCssColor('#E9E9E9'),
       child:Column(
         children: [
+          SizedBox(height: 10),
          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Padding(
                   padding: const EdgeInsets.all(20),
-                  child:Text(subPages[index].header!,style: const TextStyle(
+                  child:Text(subPages[index].header!.length >= 24 ? '${subPages[index].header!.substring(0,24)}...' : subPages[index].header!,style: const TextStyle(
                        fontSize: 16,
                        fontFamily: 'Arial',
                        fontWeight: FontWeight.w700
@@ -128,6 +130,8 @@ class _ListSubPagesState extends State<ListSubPages>{
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
+                        SizedBox(width: 10),
+                        SizedBox(height: 30),
                         Text('Views: ${subPages[index].viewsCount}',
                             style: const TextStyle(
                                 color:Colors.black,
@@ -141,7 +145,9 @@ class _ListSubPagesState extends State<ListSubPages>{
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children:[
-                    Text('Subscriptions: ${subPages[index].subscriptionsCount}',
+                        SizedBox(width: 10),
+                        SizedBox(height: 30),
+                        Text('Subscriptions: ${subPages[index].subscriptionsCount}',
                         style: const TextStyle(
                             color:Colors.green,
                             fontSize: 15,
@@ -174,6 +180,8 @@ class _ListSubPagesState extends State<ListSubPages>{
                      Row(
                        mainAxisAlignment: MainAxisAlignment.start,
                        children: [
+                         SizedBox(width: 10),
+                         SizedBox(height: 30),
                          Text('Subscription Rate: ${subPages[index].subscriptionsCount/100}',
                              style: const TextStyle(
                                  color:Colors.black,
@@ -187,6 +195,8 @@ class _ListSubPagesState extends State<ListSubPages>{
                      Row(
                          mainAxisAlignment: MainAxisAlignment.start,
                          children:[
+                           SizedBox(width: 10),
+                           SizedBox(height: 30),
                            Text('Creation Date: ${subPages[index].creationDateToString()}',
                                style: const TextStyle(
                                    color:Colors.black,
@@ -196,8 +206,8 @@ class _ListSubPagesState extends State<ListSubPages>{
                                ),
                              overflow: TextOverflow.fade,
                              maxLines: 1,
-                             softWrap: false,),
-                         ]
+                             softWrap: false,)
+                         ],
                      ),
                    ]
                ),
@@ -211,8 +221,8 @@ class _ListSubPagesState extends State<ListSubPages>{
             children: [
 
               IconButton(onPressed: (){}, icon: const Icon(Icons.remove_red_eye_outlined,color: Colors.black),iconSize: 35.0,padding: const EdgeInsets.all(20),),
-              IconButton(onPressed: (){}, icon: const Icon(Icons.remove,color: Colors.black),iconSize: 35.0,padding:const EdgeInsets.all(20)),
-              IconButton(onPressed: (){}, icon: const Icon(Icons.edit,color: Colors.black),iconSize: 35.0,padding:const EdgeInsets.all(20))
+              IconButton(onPressed: (){}, icon: const Icon(Icons.edit,color: Colors.black),iconSize: 35.0,padding:const EdgeInsets.all(20)),
+              IconButton(onPressed: (){}, icon: const Icon(Icons.delete_forever, color: Colors.black),iconSize: 35.0,padding:const EdgeInsets.all(20))
             ],
           )
 

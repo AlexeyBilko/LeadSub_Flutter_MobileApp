@@ -43,9 +43,8 @@ class SubPagesService extends ChangeNotifier{
     final prefs = await SharedPreferences.getInstance();
     String? token=prefs.getString('access_token');
     if(token!=null) {
-      String subPagesPath = "${ApiConfig.apiPath}${ApiConfig
-          .subPagesPath}";
-      var url = Uri.http(ApiConfig.baseUrl, subPagesPath);
+      String subPagesPath = "${ApiConfig.apiPath}${ApiConfig.subPagesPath}";
+      var url = Uri.http(ApiConfig.baseUrl, ApiConfig.apiPath + ApiConfig.subPagesPath);
       var httpResponse = await http.get(
         url,
         headers: {

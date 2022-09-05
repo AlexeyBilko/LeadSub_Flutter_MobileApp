@@ -79,7 +79,7 @@ class AccountService extends ChangeNotifier{
 
     Future<Map<String,dynamic>> login(String email,String password) async
     {
-        var url=Uri.http(ApiConfig.baseUrl,ApiConfig.apiPath+ApiConfig.accountControllerPath +_tokenUrl);
+        var url=Uri.http(ApiConfig.baseUrl,ApiConfig.apiPath +ApiConfig.getTokenPath);
         Map dictionary = {
           'Email':email,
           'Password':password
@@ -99,6 +99,9 @@ class AccountService extends ChangeNotifier{
               prefs.setString('access_token', jsonResponse['access_token']);
               prefs.setString('userId', jsonResponse['userId']);
               print(prefs.getString('access_token'));
+              print(jsonResponse['status']);
+              jsonResponse['status'] = httpResponse.statusCode;
+              print(jsonResponse['status']);
 
               return jsonResponse;
         }
