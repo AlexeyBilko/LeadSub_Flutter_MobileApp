@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:from_css_color/from_css_color.dart';
 import 'package:leadsub_flutter_mobileapp/api_services/AccountInfoService.dart';
 import 'package:leadsub_flutter_mobileapp/model/User.dart';
 import 'package:leadsub_flutter_mobileapp/model/apiRequestModels/registrationModel.dart';
@@ -11,6 +12,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../api_services/AccountService.dart';
 import 'dart:convert';
 
+import 'menu/menu.dart';
+
 
 class Account extends StatefulWidget {
   @override
@@ -19,7 +22,11 @@ class Account extends StatefulWidget {
 
 class _AccountState extends State<Account> {
 
+  final Menu _menu=Menu();
   User user = User(displayName: '', email: '', password: '');
+  TextEditingController passController = TextEditingController();
+  
+  
 
   final Stream<User> accountInfoStream = (() {
     late final StreamController<User> controller;
@@ -57,12 +64,11 @@ class _AccountState extends State<Account> {
                   color: Colors.black,
                   strokeWidth: 10.0,
                 ),
-
               );
               break;
             case ConnectionState.done:
               user = snapshot.data!;
-              children= AccountInfoW();
+              children= _accountInfoW();
               break;
             case ConnectionState.none:
               break;
@@ -73,61 +79,255 @@ class _AccountState extends State<Account> {
   }
 
 
-  Widget AccountInfoW(){
-    return ListView(
-      physics: BouncingScrollPhysics(),
+  Widget _accountInfoW(){
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const SizedBox(height: 24),
-        buildName(),
-        const SizedBox(height: 24),
-        Center(child: buildUpgradeButton()),
-        const SizedBox(height: 48),
-        buildAbout(),
+        Column(
+         children:[
+           const SizedBox(height: 10),
+           Text('Привіт ${user.displayName}',style: const TextStyle(
+             fontSize: 30,
+             fontFamily: 'Roboto'
+           )),
+           Text(user.email,style: const TextStyle(
+               fontSize: 24,
+               fontFamily: 'Roboto'
+           )),
+           const SizedBox(height: 20),
+           _currentPlan(),
+           const SizedBox(height: 14),
+           _statisticsCard(),
+           const SizedBox(height: 14),
+            _changePasswordCard()
+           
+         ]
+        )
       ],
     );
+  }
+  Widget _blueButton(String title){
+    return TextButton(
+        onPressed: (){}, 
+        style: ButtonStyle(
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0)
+                )
+            ),
+            minimumSize: MaterialStateProperty.all<Size>(const Size(240,50)),
+            backgroundColor:MaterialStateProperty.all<Color>(fromCssColor('#4C59CF'))
+        ),
+        child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Text(title,style: const TextStyle(
+            fontSize: 18,
+            fontFamily: 'Roboto',
+            color: Colors.white
+        )))
+    );
+  }
+
+  Widget _currentPlan(){
+      return Card(
+        color: fromCssColor('#E9E9E9'),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(13.0),
+          ),
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+            child:Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+        children:[
+          Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Обраний пакет:',style:TextStyle(
+              fontSize: 30,
+              fontFamily: 'Roboto',
+            )),
+            SizedBox(height: 10),
+            Text('Starter',style:TextStyle(
+            fontSize: 26,
+            fontFamily: 'Roboto'
+            )),
+            SizedBox(height: 13),
+            Text('Ціна 29\$ місяць',style:TextStyle(
+                fontSize: 20,
+                fontFamily: 'Roboto'
+            )),
+            SizedBox(height: 10),
+            Text('Максимальна кількість підписників',style:TextStyle(
+                fontSize: 15,
+                fontFamily: 'Roboto'
+            )),
+            SizedBox(height: 7),
+            Text('Максимальна кількість підписних сторінок',style:TextStyle(
+                fontSize: 15,
+                fontFamily: 'Roboto'
+            )),
+            SizedBox(height:15),
+            _blueButton('Змінити план')
+
+          ],
+          
+        ),
+        ])));
+  }
+  Widget _statisticsCard(){
+    return SizedBox(
+      width: 320,
+      child:Card(
+        color: fromCssColor('#E9E9E9'),
+        shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(13.0),
+         ),
+      child: Padding(
+        padding:const EdgeInsets.all(10),
+        child:Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Text('Загальна статистика:',style:TextStyle(
+                  fontSize: 23,
+                  fontFamily: 'Roboto',
+                )),
+
+
+              ],
+            ),
+            SizedBox(height: 13),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: const [
+                SizedBox(width: 30),
+                Text('Всього підписників:',style:TextStyle(
+                    fontSize: 20,
+                    fontFamily: 'Roboto'
+                )),
+
+              ],
+            ),
+            SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: const [
+                SizedBox(width: 30),
+                Text('Всього переглядів',style:TextStyle(
+                    fontSize: 20,
+                    fontFamily: 'Roboto'
+                ))
+              ],
+            )
+          ],
+        ),
+      ),
+    ));
+  }
+  Widget _changePasswordCard(){
+      return Card(
+        color: fromCssColor('#E9E9E9'),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(13.0),
+
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  SizedBox(width: 10,),
+                Text('Cтарий пароль', style: TextStyle(
+                    fontSize: 16,
+                    fontFamily: 'Roboto',
+                    fontWeight: FontWeight.w800
+                ))
+              ],),
+              Row(children: [
+
+                SizedBox(
+                  width: 300,
+                    height: 50,
+                    child:TextField(
+                  controller: passController,
+                  obscureText: true,
+                  decoration:InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      fillColor: Colors.deepOrangeAccent
+                  ),
+                )),
+              ],),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(width: 10,),
+                Text('Cтарий пароль', style: TextStyle(
+                    fontSize: 16,
+                    fontFamily: 'Roboto',
+                    fontWeight: FontWeight.w800
+                ))
+              ],),
+              Row(children: [
+                SizedBox(
+                    width: 300,
+                    height: 50,
+                    child:TextField(
+                      controller: passController,
+                      obscureText: true,
+                      decoration:InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          fillColor: Colors.deepOrangeAccent
+                      ),
+                    )),
+              ],),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(width: 10,),
+                Text('Cтарий пароль', style: TextStyle(
+                    fontSize: 16,
+                    fontFamily: 'Roboto',
+                    fontWeight: FontWeight.w800
+                ))
+              ],),
+              Row(children: [
+                SizedBox(
+                    width: 300,
+                    height: 50,
+                    child:TextField(
+                      controller: passController,
+                      obscureText: true,
+                      decoration:InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          fillColor: Colors.deepOrangeAccent
+                      ),
+                    )),
+              ],),
+              _blueButton('Змінити пароль')
+            ],
+          ),
+        ),
+      );
   }
 
   @override
   Scaffold build(BuildContext context) {
     return Scaffold(
-      body: _streamBuilder()
+        appBar: _menu.menuAppBar(),
+        drawer: _menu.menuDrawer(context),
+        body: _streamBuilder()
     );
   }
-
-  Widget buildName() => Column(
-    children: [
-      Text(
-        user.displayName!,
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-      ),
-      const SizedBox(height: 4),
-      Text(
-        user.email!,
-        style: TextStyle(color: Colors.grey),
-      )
-    ],
-  );
-
-  Widget buildUpgradeButton() => ButtonWidget(
-    text: 'Upgrade To Business or Ultimate',
-    onClicked: () {},
-  );
-
-  Widget buildAbout() => Container(
-    padding: EdgeInsets.symmetric(horizontal: 48),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Password',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 16),
-        Text(
-          user.password!,
-          style: const TextStyle(fontSize: 16, height: 1.4),
-        ),
-      ],
-    ),
-  );
+  
 }
