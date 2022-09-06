@@ -97,12 +97,12 @@ class _AccountState extends State<Account> {
   Widget buildName() => Column(
     children: [
       Text(
-        user.displayName??'default',
+        user.displayName!,
         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
       ),
       const SizedBox(height: 4),
       Text(
-        user.email??'default',
+        user.email!,
         style: TextStyle(color: Colors.grey),
       )
     ],
@@ -124,7 +124,7 @@ class _AccountState extends State<Account> {
         ),
         const SizedBox(height: 16),
         Text(
-          user.password??'default',
+          user.password!,
           style: const TextStyle(fontSize: 16, height: 1.4),
         ),
       ],

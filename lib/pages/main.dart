@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
           '/login':(context)=>const Login(),
           '/register':(context)=>const Register(),
           '/confirmEmail':(context)=>const ConfirmEmail(),
-          '/addSubPage':(context)=>const AddSubPage()
+          '/addSubPage':(context)=>const AddSubPage(),
           '/account':(context)=>Account()
 
         },
