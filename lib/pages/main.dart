@@ -6,6 +6,7 @@ import 'package:leadsub_flutter_mobileapp/pages/login.dart';
 
 import 'account.dart';
 import 'listSubPages.dart';
+import 'newaccount.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,7 +26,8 @@ class MyApp extends StatelessWidget {
           '/register':(context)=>const Register(),
           '/confirmEmail':(context)=>const ConfirmEmail(),
           '/addSubPage':(context)=>const AddSubPage(),
-          '/account':(context)=>Account()
+          '/account':(context)=>Account(),
+          '/newaccount':(context)=>NewAccount()
 
         },
     );

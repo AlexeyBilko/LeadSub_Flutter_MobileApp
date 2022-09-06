@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 class SubPage {
-  int?id;
+  int id;
   String? instagramLink;
   String? materialLink;
   String? title;
@@ -70,7 +70,7 @@ class SubPage {
 
       "subscriptionsCount":subscriptionsCount,
       "viewsCount":viewsCount,
-      "creationDate":creationDate,
+      "creationDate":creationDate?.toIso8601String(),
 
       "userId":userId
     };

@@ -105,8 +105,11 @@ class _LoginState extends State<Login> {
                   primary: Colors.white,
                   textStyle: const TextStyle(fontSize: 20)),
               onPressed: ()async {
-                var res=await accountService.login(emailController.text, passController.text);
+                var res = await accountService.login(emailController.text, passController.text);
                 if (res['status'] == 400) {
+                  _alertDialogErrorMessage("Невірні дані");
+                }
+                else if (res['status'] != 200 && res['status'] != 204) {
                   _alertDialogErrorMessage("Невірний логін або пароль");
                 }
                 else {

@@ -1,6 +1,7 @@
 
 
 
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
@@ -21,6 +22,15 @@ class AddSubPage extends StatefulWidget{
 class _AddSubPageStat extends State<AddSubPage>{
 
   SubPagesService subPagesService=SubPagesService();
+
+  final String emptyImage="https://www.freeiconspng.com/thumbs/no-image-icon/no-image-icon-13.png";
+  
+  String AvatarBase64="";
+  String MainImageBase64="";
+
+  late PlatformFile Avatar;
+  late PlatformFile MainImage;
+
 
   final TextEditingController header=TextEditingController();
   final TextEditingController titleController=TextEditingController();
@@ -191,86 +201,76 @@ class _AddSubPageStat extends State<AddSubPage>{
       ],
     );
   }
-
-  Widget _dropDownButtonToFollowTitle()
-  {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children:[
-        const Text(
-          "Button to follow title:",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-        ),
-        DropdownButton<String>(
-      value: _buttonToFollowText,
-      icon: const Icon(Icons.arrow_downward),
-      elevation: 16,
-      style: const TextStyle(color: Colors.black),
-      underline: Container(
-        height: 2,
-        color: fromCssColor('#3362DB'),
-      ),
-      onChanged: (String? newValue) {
-        setState(() {
-          _buttonToFollowText = newValue!;
-        });
-      },
-      items: _buttonToFollowTextVariants
-          .map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),
-      )]
-    );
-  }
-
-  Widget _dropDownButtonToGetMaterialTitle()
-  {
-    return Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children:[
+  Widget _dropDownButtonsContainer(){
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children:const [
+                Text(
+                "Button get material:",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),),
+                SizedBox(height: 30,),
+                Text(
+                  "Button to follow title:",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                ),
+              ]
+          ),
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
-          children:const [Text(
-            "Button to get material:",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-          ),]
-          ),
+            children: [
+              DropdownButton<String>(
+                value: _buttonToGetMaterial,
+                icon: const Icon(Icons.arrow_downward),
+                elevation: 16,
+                style: const TextStyle(color: Colors.black),
+                underline: Container(
+                  height: 2,
+                  color: fromCssColor('#3362DB'),
+                ),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _buttonToGetMaterial= newValue!;
+                  });
+                },
+                items:_buttonToGetMaterialTitleVariants
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              ),
+              DropdownButton<String>(
+                value: _buttonToFollowText,
+                icon: const Icon(Icons.arrow_downward),
+                elevation: 16,
+                style: const TextStyle(color: Colors.black),
+                underline: Container(
+                  height: 2,
+                  color: fromCssColor('#3362DB'),
+                ),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _buttonToFollowText = newValue!;
+                  });
+                },
+                items: _buttonToFollowTextVariants
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              )
+            ],
+          )
+        ],
 
-
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-          children:[
-            DropdownButton<String>(
-            value: _buttonToGetMaterial,
-            icon: const Icon(Icons.arrow_downward),
-            elevation: 16,
-            style: const TextStyle(color: Colors.black),
-            underline: Container(
-              height: 2,
-              color: fromCssColor('#3362DB'),
-            ),
-            onChanged: (String? newValue) {
-              setState(() {
-                _buttonToGetMaterial= newValue!;
-              });
-            },
-            items:_buttonToGetMaterialTitleVariants
-                .map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
-          )]
-          )]
-    );
+      );
   }
-
-
-
 
   Widget _entryDescriptionsField(String title){
     return Container(
@@ -314,7 +314,7 @@ class _AddSubPageStat extends State<AddSubPage>{
           ),
           Container(
               child: TextField(
-                controller: description,
+                controller: successDescription,
                 decoration: const InputDecoration(
                     border: InputBorder.none,
                     fillColor: Color(0xfff3f3f4),
@@ -358,7 +358,7 @@ class _AddSubPageStat extends State<AddSubPage>{
               onPressed: ()async {
                   subPagesService.createSubPage(
                     SubPage(
-                        id:null,
+                        id:0,
                         instagramLink: instagramLink.text,
                         materialLink: materialLink.text,
                         title: titleController.text,
@@ -367,6 +367,8 @@ class _AddSubPageStat extends State<AddSubPage>{
                         getButtonTitle: _buttonToGetMaterial,
                         successDescription: successDescription.text,
                         successButtonTitle: _buttonToFollowText,
+                        avatar: "data:image/${Avatar.extension};base64, ${AvatarBase64}",
+                        mainImage: "data:image/${MainImage.extension};base64, ${MainImageBase64}",
                         subscriptionsCount: 0,
                         viewsCount: 0,
                         creationDate: DateTime.now(),
@@ -381,6 +383,57 @@ class _AddSubPageStat extends State<AddSubPage>{
       ),
     );
   }
+  Widget _uploadAvatarPicker(){
+      final imageWidget=AvatarBase64==""?const Icon(Icons.image,size: 100,):Image.memory(base64Decode(AvatarBase64));
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children:[
+        TextButton(onPressed: ()async{
+        FilePickerResult? result = await FilePicker.platform.pickFiles(
+          type:FileType.custom,
+          allowedExtensions: ['png', 'jpg', 'jpeg'],
+        );
+
+        if (result != null)
+        {
+          final imageBytes = result.files[0].bytes?.toList();
+          setState((){
+            Avatar=result.files[0];
+            AvatarBase64=base64Encode(imageBytes!);
+          });
+        }
+      }, child: const Text('Завантажити аватар')),
+          imageWidget
+        ]
+      );
+  }
+
+
+  Widget _uploadMainImagePicker(){
+    final imageWidget=MainImageBase64==""?const Icon(Icons.image,size: 100,):Image.memory(base64Decode(MainImageBase64));
+    return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children:[
+          TextButton(onPressed: ()async{
+            FilePickerResult? result = await FilePicker.platform.pickFiles(
+              type:FileType.custom,
+              allowedExtensions: ['png', 'jpg', 'jpeg'],
+            );
+
+            if (result != null)
+            {
+              final imageBytes = result.files[0].bytes?.toList();
+              setState((){
+                MainImage=result.files[0];
+                MainImageBase64=base64Encode(imageBytes!);
+              });
+            }
+          }, child: const Text('Завантажити головне зображення')),
+          imageWidget
+        ]
+    );
+  }
+
 
 
   @override
@@ -397,8 +450,10 @@ class _AddSubPageStat extends State<AddSubPage>{
               _entryInstagramLinkField("Instagram link"),
               _entryMaterialLinkField("Material link"),
               _collectEmails(),
-              _dropDownButtonToFollowTitle(),
-              _dropDownButtonToGetMaterialTitle(),
+              _uploadAvatarPicker(),
+              _uploadMainImagePicker(),
+              _entrySuccessDescriptionsField("Success description"),
+              _dropDownButtonsContainer(),
 
 
               _entryDescriptionsField("Description"),
