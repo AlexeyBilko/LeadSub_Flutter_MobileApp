@@ -7,5 +7,7 @@ class ApiConfig{
     static const String logout="/UserLogout";
     static const String subPagesPath="/subpages";
     static const String getAllSubPages="/GetAll";
+    static const String getSubPage="/Getbyid";
+    static const String deleteSubPage="/Delete";
     static const String apiPath="/api/v2";
 }

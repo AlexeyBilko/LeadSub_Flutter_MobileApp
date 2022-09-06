@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:leadsub_flutter_mobileapp/model/SubPage.dart';
@@ -36,6 +37,34 @@ class SubPagesService extends ChangeNotifier{
     return subPage;
   }
 
+  Future<SubPage> EditSubPage(SubPage subPage) async
+  {
+    final prefs = await SharedPreferences.getInstance();
+    String? token=prefs.getString('access_token');
+    if(token!=null) {
+      String subPagesPath = "${ApiConfig.apiPath}${ApiConfig
+          .subPagesPath}/Put";
+      var url = Uri.http(ApiConfig.baseUrl, subPagesPath);
+      var body = subPage.toJson();
+      var httpResponse = await http.put(
+          url,
+          headers: {
+            "Content-Type":"application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Authorization": "Bearer $token"
+          },
+          body: body);
+
+      print(httpResponse.statusCode);
+      if(httpResponse.statusCode==200)
+      {
+        final jsonResponse=jsonDecode(httpResponse.body);
+        subPage.id = jsonResponse['id'];
+      }
+    }
+    return subPage;
+  }
+
 
   Future<List<SubPage>> getSubPages()async{
 
@@ -57,6 +86,47 @@ class SubPagesService extends ChangeNotifier{
      }
     }
     return List.empty();
+  }
+
+  Future<SubPage?> getSubPage(int id)async{
+    final prefs = await SharedPreferences.getInstance();
+    String? token=prefs.getString('access_token');
+    if(token!=null) {
+      String subPagesPath = "${ApiConfig.apiPath}${ApiConfig.subPagesPath}${ApiConfig.getSubPage}";
+      var url = Uri.http(ApiConfig.baseUrl, subPagesPath);
+      var httpResponse = await http.get(
+        url,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Authorization": "Bearer $token"
+        },);
+      if(httpResponse.statusCode==200) {
+        SubPage subPage = jsonDecode(httpResponse.body);
+        return subPage;
+      }
+    }
+    return null;
+  }
+
+  Future<bool> deleteSubPages(int id) async{
+    final prefs = await SharedPreferences.getInstance();
+    String? token=prefs.getString('access_token');
+    if(token!=null) {
+      String subPagesPath = "${ApiConfig.apiPath}${ApiConfig.subPagesPath}${ApiConfig.deleteSubPage}/$id";
+      var url = Uri.http(ApiConfig.baseUrl, subPagesPath);
+      print(url);
+      var httpResponse = await http.delete(
+        url,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Authorization": "Bearer $token"
+        });
+      print(httpResponse.statusCode);
+      if(httpResponse.statusCode==200) {
+        return true;
+      }
+    }
+    return false;
   }
 
 }

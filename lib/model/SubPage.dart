@@ -12,6 +12,7 @@ class SubPage {
   String? mainImage;
   String? successDescription;
   String? successButtonTitle;
+  int CollectEmailStatus=0;
   int subscriptionsCount=0;
   int viewsCount=0;
   DateTime? creationDate;
@@ -30,6 +31,7 @@ class SubPage {
     required this.successDescription,
     required this.successButtonTitle,
     required this.subscriptionsCount,
+    required this.CollectEmailStatus,
     required this.viewsCount,
     required this.creationDate,
     required this.userId
@@ -49,6 +51,7 @@ class SubPage {
       successDescription:json["successDescription"],
       successButtonTitle:json["successButtonTitle"],
       subscriptionsCount:json["subscriptionsCount"],
+      CollectEmailStatus:json["CollectEmailStatus"],
       viewsCount:json["viewsCount"],
       creationDate:DateTime.parse(json["creationDate"]),
       userId:json["userId"]

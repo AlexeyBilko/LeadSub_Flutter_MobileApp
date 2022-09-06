@@ -1,7 +1,5 @@
-
-
-
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
@@ -12,25 +10,65 @@ import 'package:leadsub_flutter_mobileapp/model/SubPage.dart';
 
 import 'menu/menu.dart';
 
-class AddSubPage extends StatefulWidget{
-  const AddSubPage({Key? key}) : super(key: key);
+class EditSubPage extends StatefulWidget{
+  const EditSubPage({required this.subpage});
+
+  final SubPage subpage;
+  static const id = "edit";
 
   @override
-  State<StatefulWidget> createState()=>_AddSubPageStat();
+  State<StatefulWidget> createState()=>_EditSubPageStat();
 }
 
-class _AddSubPageStat extends State<AddSubPage>{
-
+class _EditSubPageStat extends State<EditSubPage>{
+  late SubPage SubPageToEdit;
   SubPagesService subPagesService=SubPagesService();
+
+  /*void loadPage() async{
+    SubPageToEdit = await subPagesService.getSubPage(widget.pageid);
+    header.text = SubPageToEdit!.header!;
+    instagramLink.text = SubPageToEdit!.instagramLink!;
+    titleController.value = titleController.value.copyWith(
+      text: SubPageToEdit!.title!,
+      selection: TextSelection.collapsed(offset: SubPageToEdit!.title!.length),
+    );
+    materialLink.text = SubPageToEdit!.materialLink!;
+    description.text = SubPageToEdit!.description!;
+    successDescription.text = SubPageToEdit!.successDescription!;
+    MainImageBase64 = SubPageToEdit!.mainImage!;
+    AvatarBase64 = SubPageToEdit!.avatar!;
+  }*/
+
+  @override
+  void initState() {
+    /*WidgetsBinding.instance.addPostFrameCallback((_){
+      loadPage();
+    });*/
+    SubPageToEdit = widget.subpage;
+    header.text = SubPageToEdit.header!;
+    instagramLink.text = SubPageToEdit.instagramLink!;
+    titleController.text = SubPageToEdit.title!;
+    materialLink.text = SubPageToEdit.materialLink!;
+    description.text = SubPageToEdit.description!;
+    successDescription.text = SubPageToEdit.successDescription!;
+    MainImageBase64 = SubPageToEdit.mainImage!.substring(23);
+    AvatarBase64 = SubPageToEdit.avatar!.substring(23);
+    AvatarOld = SubPageToEdit.avatar!;
+    MainImageOld = SubPageToEdit.mainImage!;
+    isCollectEmails = SubPageToEdit.CollectEmailStatus == 0 ? false : true;
+    super.initState();
+  }
 
   final String emptyImage="https://www.freeiconspng.com/thumbs/no-image-icon/no-image-icon-13.png";
   
-  String AvatarBase64="";
-  String MainImageBase64="";
+  String AvatarBase64 = "";
+  String MainImageBase64 = "";
 
-  late PlatformFile Avatar;
-  late PlatformFile MainImage;
+  String AvatarOld = "";
+  String MainImageOld = "";
 
+  PlatformFile? Avatar = null;
+  PlatformFile? MainImage = null;
 
   final TextEditingController header=TextEditingController();
   final TextEditingController titleController=TextEditingController();
@@ -107,7 +145,7 @@ class _AddSubPageStat extends State<AddSubPage>{
                   border: InputBorder.none,
                   fillColor: Color(0xfff3f3f4),
                   filled: true),
-            ),
+            )
           ),
         ],
       ),
@@ -356,30 +394,49 @@ class _AddSubPageStat extends State<AddSubPage>{
                   primary: Colors.white,
                   textStyle: const TextStyle(fontSize: 20)),
               onPressed: ()async {
-                  subPagesService.createSubPage(
-                    SubPage(
-                        id:0,
-                        instagramLink: instagramLink.text,
-                        materialLink: materialLink.text,
-                        title: titleController.text,
-                        header: header.text,
-                        description: description.text,
-                        getButtonTitle: _buttonToGetMaterial,
-                        successDescription: successDescription.text,
-                        successButtonTitle: _buttonToFollowText,
-                        avatar: "data:image/${Avatar.extension};base64, ${AvatarBase64}",
-                        mainImage: "data:image/${MainImage.extension};base64, ${MainImageBase64}",
-                        subscriptionsCount: 0,
-                       CollectEmailStatus: isCollectEmails == true ? 1 : 0,
-                        viewsCount: 0,
-                        creationDate: DateTime.now(),
-                        userId: null,
-                        )
-                  );
-                  Future.delayed(const Duration(seconds: 3));
-                  Navigator.pushNamedAndRemoveUntil(context, '/listSubPages', (route) => false);
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext ctx) {
+                        return AlertDialog(
+                          title: const Text('Підтвердіть'),
+                          content: const Text('Ви хочете зберегти дані після редагування?'),
+                          actions: [
+                            // The "Yes" button
+                            TextButton(
+                                onPressed: () {
+                                  subPagesService.EditSubPage(
+                                      SubPage(
+                                        id: SubPageToEdit.id,
+                                        instagramLink: instagramLink.text,
+                                        materialLink: materialLink.text,
+                                        title: titleController.text,
+                                        header: header.text,
+                                        description: description.text,
+                                        getButtonTitle: _buttonToGetMaterial,
+                                        successDescription: successDescription.text,
+                                        successButtonTitle: _buttonToFollowText,
+                                        avatar: Avatar == null ? AvatarOld : "data:image/${Avatar!.extension};base64, ${AvatarBase64}",
+                                        mainImage: MainImage == null ? MainImageOld : "data:image/${MainImage!.extension};base64, ${MainImageBase64}",
+                                        subscriptionsCount: SubPageToEdit!.subscriptionsCount,
+                                        CollectEmailStatus: isCollectEmails == true ? 1 : 0,
+                                        viewsCount: SubPageToEdit!.viewsCount,
+                                        creationDate: SubPageToEdit!.creationDate,
+                                        userId: SubPageToEdit!.userId,
+                                      )
+                                  );
+                                  Navigator.pushNamedAndRemoveUntil(context, '/listSubPages', (route) => false);
+                                },
+                                child: const Text('Так')),
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('Ні'))
+                          ],
+                        );
+                      });
               },
-              child: const Text('Create')
+              child: const Text('Save')
             ),
         ],
       ),
@@ -413,7 +470,7 @@ class _AddSubPageStat extends State<AddSubPage>{
 
 
   Widget _uploadMainImagePicker(){
-    final imageWidget=MainImageBase64==""?const Icon(Icons.image,size: 100,):Image.memory(base64Decode(MainImageBase64));
+    final imageWidget = MainImageBase64 == "" ? const Icon(Icons.image,size: 100,) : Image.memory(base64Decode(MainImageBase64));
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children:[
@@ -429,7 +486,7 @@ class _AddSubPageStat extends State<AddSubPage>{
               final imageBytes = result.files[0].bytes?.toList();
               setState((){
                 MainImage=result.files[0];
-                MainImageBase64=base64Encode(imageBytes!);
+                MainImageBase64 = base64Encode(imageBytes!);
               });
             }
           }, child: const Text('Завантажити головне зображення')),
