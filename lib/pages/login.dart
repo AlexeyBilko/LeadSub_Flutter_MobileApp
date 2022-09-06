@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:leadsub_flutter_mobileapp/pages/register.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 import '../api_services/AccountService.dart';
 import '../model/User.dart';
 import 'menu/menu.dart';
@@ -102,6 +102,7 @@ class _LoginState extends State<Login> {
           TextButton(
               style: TextButton.styleFrom(
                   padding: const EdgeInsets.all(16.0),
+                  minimumSize: Size(MediaQuery.of(context).size.width, 37),
                   primary: Colors.white,
                   textStyle: const TextStyle(fontSize: 20)),
               onPressed: ()async {
@@ -209,15 +210,27 @@ class _LoginState extends State<Login> {
                       _title(),
                       const SizedBox(height: 50),
                       _emailPasswordWidget(),
-                      const SizedBox(height: 5),
+                      const SizedBox(height: 0),
                       Container(
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         alignment: Alignment.centerRight,
-                        child: const Text('Forgot Password ?',
-                            style: TextStyle(
-                                fontSize: 14, fontWeight: FontWeight.w500)),
+                        child:
+                            TextButton(
+                                style: TextButton.styleFrom(
+                                    minimumSize: Size(50, 10),
+                                    primary: Colors.black,
+                                    textStyle: const TextStyle(fontSize: 14)),
+                                onPressed: ()async {
+                                    const url = 'http://http://alexeyleadsub-001-site1.itempurl.com/Account/EnterEmail';
+                                    if (await canLaunch(url)) {
+                                      await launch(url);
+                                    } else {
+                                      throw 'Could not launch $url';
+                                    }
+                                },
+                                child: const Text('Forgot Password?')),
                       ),
-                      SizedBox(height: 30),
+                      SizedBox(height: 15),
                       _submitButton(),
                       SizedBox(height: 0),
                       _createAccountLabel(),

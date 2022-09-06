@@ -8,6 +8,7 @@ import 'package:from_css_color/from_css_color.dart';
 import 'package:leadsub_flutter_mobileapp/api_services/subPagesService.dart';
 import 'package:leadsub_flutter_mobileapp/pages/editSubPage.dart';
 import 'package:leadsub_flutter_mobileapp/pages/menu/menu.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../api_services/AccountService.dart';
 import '../model/SubPage.dart';
@@ -277,7 +278,14 @@ class _ListSubPagesState extends State<ListSubPages>{
            mainAxisAlignment: MainAxisAlignment.center,
             children: [
 
-              IconButton(onPressed: (){}, icon: const Icon(Icons.remove_red_eye_outlined,color: Colors.black),iconSize: 35.0,padding: const EdgeInsets.all(20),),
+              IconButton(onPressed: () async {
+                String url = 'http://alexeyleadsub-001-site1.itempurl.com/page?id=${subPages[index].id}';
+                if (await canLaunch(url)) {
+                await launch(url);
+                } else {
+                throw 'Could not launch $url';
+                }
+              }, icon: const Icon(Icons.remove_red_eye_outlined,color: Colors.black),iconSize: 35.0,padding: const EdgeInsets.all(20),),
               IconButton(onPressed: (){ _edit(context); }, icon: const Icon(Icons.edit,color: Colors.black),iconSize: 35.0,padding:const EdgeInsets.all(20)),
               IconButton(onPressed: (){ _delete(context); }, icon: const Icon(Icons.delete_forever, color: Colors.black),iconSize: 35.0,padding:const EdgeInsets.all(20))
             ],
