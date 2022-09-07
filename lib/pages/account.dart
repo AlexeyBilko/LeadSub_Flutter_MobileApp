@@ -94,11 +94,11 @@ class _AccountState extends State<Account> {
                fontSize: 24,
                fontFamily: 'Roboto'
            )),
-           const SizedBox(height: 20),
+           const SizedBox(height: 30),
            _currentPlan(),
-           const SizedBox(height: 14),
+           const SizedBox(height: 20),
            _statisticsCard(),
-           const SizedBox(height: 14),
+           const SizedBox(height: 20),
             _changePasswordCard()
            
          ]
@@ -168,7 +168,6 @@ class _AccountState extends State<Account> {
             )),
             SizedBox(height:15),
             _blueButton('Змінити план')
-
           ],
           
         ),
@@ -176,7 +175,7 @@ class _AccountState extends State<Account> {
   }
   Widget _statisticsCard(){
     return SizedBox(
-      width: 320,
+      width: 330,
       child:Card(
         color: fromCssColor('#E9E9E9'),
         shape: RoundedRectangleBorder(
@@ -227,98 +226,122 @@ class _AccountState extends State<Account> {
     ));
   }
   Widget _changePasswordCard(){
-      return Card(
-        color: fromCssColor('#E9E9E9'),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(13.0),
-
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  SizedBox(width: 10,),
-                Text('Cтарий пароль', style: TextStyle(
-                    fontSize: 16,
-                    fontFamily: 'Roboto',
-                    fontWeight: FontWeight.w800
-                ))
-              ],),
-              Row(children: [
-
-                SizedBox(
-                  width: 300,
-                    height: 50,
-                    child:TextField(
-                  controller: passController,
-                  obscureText: true,
-                  decoration:InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                      fillColor: Colors.deepOrangeAccent
-                  ),
-                )),
-              ],),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  SizedBox(width: 10,),
-                Text('Cтарий пароль', style: TextStyle(
-                    fontSize: 16,
-                    fontFamily: 'Roboto',
-                    fontWeight: FontWeight.w800
-                ))
-              ],),
-              Row(children: [
-                SizedBox(
-                    width: 300,
-                    height: 50,
-                    child:TextField(
-                      controller: passController,
-                      obscureText: true,
-                      decoration:InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30.0),
-                          ),
-                          fillColor: Colors.deepOrangeAccent
-                      ),
-                    )),
-              ],),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  SizedBox(width: 10,),
-                Text('Cтарий пароль', style: TextStyle(
-                    fontSize: 16,
-                    fontFamily: 'Roboto',
-                    fontWeight: FontWeight.w800
-                ))
-              ],),
-              Row(children: [
-                SizedBox(
-                    width: 300,
-                    height: 50,
-                    child:TextField(
-                      controller: passController,
-                      obscureText: true,
-                      decoration:InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30.0),
-                          ),
-                          fillColor: Colors.deepOrangeAccent
-                      ),
-                    )),
-              ],),
-              _blueButton('Змінити пароль')
-            ],
+    return SizedBox(
+        width: 330,
+        child:Card(
+          color: fromCssColor('#E9E9E9'),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(13.0),
           ),
-        ),
-      );
+          child: Padding(
+            padding:const EdgeInsets.all(13),
+            child:Column(
+              children: [
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: const [
+                    SizedBox(width: 10,),
+                    Text('Введіть пароль:',style:TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Roboto',
+                    )),
+                  ],
+                ),
+                SizedBox(height: 10),
+                SizedBox(
+                  width: 300.0,
+                  height: 40,
+                  child: TextField(
+                      controller: passController,
+                      obscureText: true,
+                      decoration:InputDecoration(
+                          isDense: true,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(50.0),
+                            borderSide: BorderSide(
+                              width: 0,
+                              style: BorderStyle.none,
+                            )
+                          ),
+                          fillColor: fromCssColor('#D0D0D0'),
+                          filled: true),
+                      style: const TextStyle(fontSize: 18.0,color:Colors.black)
+                  ),
+                ),
+                SizedBox(height: 14),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: const [
+                    SizedBox(width: 10,),
+                    Text('Новий пароль:',style:TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Roboto',
+                    )),
+                  ],
+                ),
+                SizedBox(height: 10),
+                SizedBox(
+                  width: 300.0,
+                  height: 40,
+                  child: TextField(
+                      controller: passController,
+                      obscureText: true,
+                      decoration:InputDecoration(
+                          isDense: true,
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50.0),
+                              borderSide: BorderSide(
+                                width: 0,
+                                style: BorderStyle.none,
+                              )
+                          ),
+                          fillColor: fromCssColor('#D0D0D0'),
+                          filled: true),
+                      style: const TextStyle(fontSize: 18.0,color:Colors.black)
+                  ),
+                ),
+                SizedBox(height: 14),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: const [
+                    SizedBox(width: 10,),
+                    Text('Підтвердити пароль:',style:TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Roboto',
+                    )),
+                  ],
+                ),
+                SizedBox(height: 10),
+                SizedBox(
+                  width: 300.0,
+                  height: 40,
+                  child: TextField(
+                      controller: passController,
+                      obscureText: true,
+                      decoration:InputDecoration(
+                          isDense: true,
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50.0),
+                              borderSide: BorderSide(
+                                width: 0,
+                                style: BorderStyle.none,
+                              )
+                          ),
+                          fillColor: fromCssColor('#D0D0D0'),
+                          filled: true),
+                      style: const TextStyle(fontSize: 18.0,color:Colors.black)
+                  ),
+                ),
+                SizedBox(height: 18),
+                _blueButton('Змінити пароль')
+              ],
+            ),
+          ),
+        ));
   }
 
   @override
