@@ -9,5 +9,8 @@ class ApiConfig{
     static const String getAllSubPages="/GetAll";
     static const String getSubPage="/Getbyid";
     static const String deleteSubPage="/Delete";
+
+    static const String accountInfo="/accountInfo";
+    static const String changePassword="/changePass";
     static const String apiPath="/api/v2";
 }
