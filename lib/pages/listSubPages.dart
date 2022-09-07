@@ -190,7 +190,7 @@ class _ListSubPagesState extends State<ListSubPages>{
                       children: [
                         SizedBox(width: 10),
                         SizedBox(height: 30),
-                        Text('Views: ${subPages[index].viewsCount}',
+                        Text('Переглядів: ${subPages[index].viewsCount}',
                             style: const TextStyle(
                                 color:Colors.black,
                                 fontSize: 15,
@@ -205,7 +205,7 @@ class _ListSubPagesState extends State<ListSubPages>{
                       children:[
                         SizedBox(width: 10),
                         SizedBox(height: 30),
-                        Text('Subscriptions: ${subPages[index].subscriptionsCount}',
+                        Text('Підписок: ${subPages[index].subscriptionsCount}',
                         style: const TextStyle(
                             color:Colors.green,
                             fontSize: 15,
@@ -240,7 +240,7 @@ class _ListSubPagesState extends State<ListSubPages>{
                        children: [
                          SizedBox(width: 10),
                          SizedBox(height: 30),
-                         Text('Subscription Rate: ${subPages[index].subscriptionsCount/100}',
+                         Text('Відсоток підписок: ${subPages[index].viewsCount == 0 ? '0': (subPages[index].subscriptionsCount/subPages[index].viewsCount) * 100}%',
                              style: const TextStyle(
                                  color:Colors.black,
                                  fontSize: 15,
@@ -255,7 +255,7 @@ class _ListSubPagesState extends State<ListSubPages>{
                          children:[
                            SizedBox(width: 10),
                            SizedBox(height: 30),
-                           Text('Creation Date: ${subPages[index].creationDateToString()}',
+                           Text('Дата створення: ${subPages[index].creationDateToString()}',
                                style: const TextStyle(
                                    color:Colors.black,
                                    fontSize: 15,

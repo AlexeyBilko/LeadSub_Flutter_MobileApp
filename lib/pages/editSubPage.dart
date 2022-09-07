@@ -77,23 +77,19 @@ class _EditSubPageStat extends State<EditSubPage>{
   final TextEditingController description=TextEditingController();
   final TextEditingController successDescription=TextEditingController();
   final List<String>_buttonToFollowTextVariants=[
-    'Get',
-    'Get material',
-    'Subscribe',
-    'Subscribe to get',
-    'Follow',
-    'Follow to Get'
+    'Отримати',
+    'Відкрити',
+    'Отримати це'
   ];
   final List<String>_buttonToGetMaterialTitleVariants=[
-    'Already Followed',
-    'I\'ve followed',
-    'Get',
-    'Get my material',
-    'Receive material'
+    'Отримати',
+    'Підписатися',
+    'Відкрити',
+    'Отримати Це'
   ];
 
-  String _buttonToFollowText="Get";
-  String _buttonToGetMaterial="Get";
+  String _buttonToFollowText="Отримати";
+  String _buttonToGetMaterial="Отримати";
 
   bool isCollectEmails=false;
   final Menu menu=Menu();
@@ -119,6 +115,24 @@ class _EditSubPageStat extends State<EditSubPage>{
                   fillColor: Color(0xfff3f3f4),
                   filled: true),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget EditPageHeader(String title) {
+    return Container(
+      margin: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            title,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+          ),
+          const SizedBox(
+            height: 10,
           ),
         ],
       ),
@@ -211,7 +225,7 @@ class _EditSubPageStat extends State<EditSubPage>{
     return Column(
       children: <Widget>[
         ListTile(
-          title: const Text('Do not require email'),
+          title: const Text('Без електронної пошти'),
           leading: Radio<bool>(
             value: false,
             activeColor: fromCssColor('#3362DB'),
@@ -224,7 +238,7 @@ class _EditSubPageStat extends State<EditSubPage>{
           ),
         ),
         ListTile(
-          title: const Text('Require email'),
+          title: const Text('Збирати електронну пошту'),
           leading: Radio<bool>(
             value: true,
             activeColor: fromCssColor('#3362DB'),
@@ -247,11 +261,11 @@ class _EditSubPageStat extends State<EditSubPage>{
               mainAxisAlignment: MainAxisAlignment.end,
               children:const [
                 Text(
-                "Button get material:",
+                "Текст на кнопці \"Отримати\" *    ",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),),
                 SizedBox(height: 30,),
                 Text(
-                  "Button to follow title:",
+                  "Текст на кнопці успіх *",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                 ),
               ]
@@ -404,28 +418,66 @@ class _EditSubPageStat extends State<EditSubPage>{
                             // The "Yes" button
                             TextButton(
                                 onPressed: () {
-                                  subPagesService.EditSubPage(
-                                      SubPage(
-                                        id: SubPageToEdit.id,
-                                        instagramLink: instagramLink.text,
-                                        materialLink: materialLink.text,
-                                        title: titleController.text,
-                                        header: header.text,
-                                        description: description.text,
-                                        getButtonTitle: _buttonToGetMaterial,
-                                        successDescription: successDescription.text,
-                                        successButtonTitle: _buttonToFollowText,
-                                        avatar: Avatar == null ? AvatarOld : "data:image/${Avatar!.extension};base64, ${AvatarBase64}",
-                                        mainImage: MainImage == null ? MainImageOld : "data:image/${MainImage!.extension};base64, ${MainImageBase64}",
-                                        subscriptionsCount: SubPageToEdit!.subscriptionsCount,
-                                        CollectEmailStatus: isCollectEmails == true ? 1 : 0,
-                                        viewsCount: SubPageToEdit!.viewsCount,
-                                        creationDate: SubPageToEdit!.creationDate,
-                                        userId: SubPageToEdit!.userId,
-                                      )
-                                  );
-                                  Navigator.pushNamedAndRemoveUntil(context, '/listSubPages', (route) => false);
-                                },
+                                  if(instagramLink.text == "" || instagramLink.text == null ||
+                                      materialLink.text == "" || materialLink.text == null ||
+                                      titleController.text == "" || titleController.text == null ||
+                                      header.text == "" || header.text == null ||
+                                      description.text == "" || description.text == null ||
+                                      successDescription.text == "" || successDescription.text == null ||
+                                      AvatarBase64 == "" || MainImageBase64 == ""){
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext ctx) {
+                                          return AlertDialog(
+                                            title: const Text('Попередження'),
+                                            content: const Text('Заповніть всі поля, щоб відредагувати Підписну Сторінку'),
+                                            actions: [
+                                              // The "Yes" button
+                                              TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  child: const Text('Зрозуміло'))
+                                            ],
+                                          );
+                                        });
+                                  }
+                                  else {
+                                    subPagesService.EditSubPage(
+                                        SubPage(
+                                          id: SubPageToEdit.id,
+                                          instagramLink: instagramLink.text,
+                                          materialLink: materialLink.text,
+                                          title: titleController.text,
+                                          header: header.text,
+                                          description: description.text,
+                                          getButtonTitle: _buttonToGetMaterial,
+                                          successDescription: successDescription
+                                              .text,
+                                          successButtonTitle: _buttonToFollowText,
+                                          avatar: Avatar == null
+                                              ? AvatarOld
+                                              : "data:image/${Avatar!
+                                              .extension};base64, ${AvatarBase64}",
+                                          mainImage: MainImage == null
+                                              ? MainImageOld
+                                              : "data:image/${MainImage!
+                                              .extension};base64, ${MainImageBase64}",
+                                          subscriptionsCount: SubPageToEdit!
+                                              .subscriptionsCount,
+                                          CollectEmailStatus: isCollectEmails ==
+                                              true ? 1 : 0,
+                                          viewsCount: SubPageToEdit!.viewsCount,
+                                          creationDate: SubPageToEdit!
+                                              .creationDate,
+                                          userId: SubPageToEdit!.userId,
+                                        )
+                                    );
+                                    Navigator.pushNamedAndRemoveUntil(
+                                        context, '/listSubPages', (
+                                        route) => false);
+                                  }
+                                  },
                                 child: const Text('Так')),
                             TextButton(
                                 onPressed: () {
@@ -436,7 +488,7 @@ class _EditSubPageStat extends State<EditSubPage>{
                         );
                       });
               },
-              child: const Text('Save')
+              child: const Text('Зберегти Зміни')
             ),
         ],
       ),
@@ -506,19 +558,39 @@ class _EditSubPageStat extends State<EditSubPage>{
         SingleChildScrollView(
           child:Column(
             children: [
-              _entryTitleField("Title"),
-              _entryHeaderField("Header"),
-              _entryInstagramLinkField("Instagram link"),
-              _entryMaterialLinkField("Material link"),
+              EditPageHeader("Редагування Підписної Сторінки"),
+              _entryTitleField("Назва (тільки для вас) *"),
+              _entryHeaderField("Заголовок (всі будуть бачити) *"),
+              _entryInstagramLinkField("Ваш Нікнейм в Інстаграм *"),
+              _entryMaterialLinkField("Посилання на матеріал *"),
               _collectEmails(),
+              const SizedBox(
+                height: 15,
+              ),
               _uploadAvatarPicker(),
+              const SizedBox(
+                height: 15,
+              ),
               _uploadMainImagePicker(),
-              _entrySuccessDescriptionsField("Success description"),
+              const SizedBox(
+                height: 15,
+              ),
+              _entrySuccessDescriptionsField("Повідомлення про успішну перевірку *"),
+              const SizedBox(
+                height: 15,
+              ),
               _dropDownButtonsContainer(),
-
-
-              _entryDescriptionsField("Description"),
+              const SizedBox(
+                height: 15,
+              ),
+              _entryDescriptionsField("Опис сторінки*"),
+              const SizedBox(
+                height: 20,
+              ),
               _addButton(),
+              const SizedBox(
+                height: 40,
+              ),
             ],
         ),)
       );

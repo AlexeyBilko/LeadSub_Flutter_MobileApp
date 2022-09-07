@@ -117,7 +117,7 @@ class _LoginState extends State<Login> {
                   Navigator.pushNamedAndRemoveUntil(context, '/listSubPages', (route) => false);
                 }
               },
-              child: const Text('Sign in')),
+              child: const Text('Увійти')),
         ],
       ),
     );
@@ -136,8 +136,8 @@ class _LoginState extends State<Login> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: const <Widget>[
             Text(
-              'Create A New Account',
-              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+              'Створити новий акаунт',
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
             ),
           ],
         ),
@@ -153,11 +153,11 @@ class _LoginState extends State<Login> {
           style: TextStyle(
             fontSize: 30,
             fontWeight: FontWeight.w700,
-            color: Colors.black,
+            color: Colors.indigo,
           ),
           children: [
             TextSpan(
-                text: "Log In",
+                text: "Увійти в акаунт",
                 style: TextStyle(
                   fontSize: 15.0,
                   color: Colors.grey,
@@ -169,8 +169,8 @@ class _LoginState extends State<Login> {
   Widget _emailPasswordWidget() {
     return Column(
       children: <Widget>[
-        _entryEmailField("Email"),
-        _entryPasswordField("Password", isPassword: true),
+        _entryEmailField("Електронна пошта"),
+        _entryPasswordField("Пароль", isPassword: true),
       ],
     );
   }
@@ -228,7 +228,7 @@ class _LoginState extends State<Login> {
                                       throw 'Could not launch $url';
                                     }
                                 },
-                                child: const Text('Forgot Password?')),
+                                child: const Text('Забули пароль?')),
                       ),
                       SizedBox(height: 15),
                       _submitButton(),
