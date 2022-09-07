@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:leadsub_flutter_mobileapp/api_services/ApiConfiguration/ApiConfiguration.dart';
 import 'package:http/http.dart' as http;
+import 'package:leadsub_flutter_mobileapp/model/apiRequestModels/changePasswordRequestModel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../model/apiRequestModels/registrationModel.dart';
@@ -128,5 +129,26 @@ class AccountService extends ChangeNotifier{
        final prefs = await SharedPreferences.getInstance();
        prefs.remove('access_token');
        return {};
+   }
+
+   Future<int>changePassword(ChangePasswordRequestModel model)async
+   {
+     final prefs = await SharedPreferences.getInstance();
+     String? token=prefs.getString('access_token');
+     if(token!=null){
+       String accountInfoUrl=ApiConfig.apiPath+ApiConfig.accountControllerPath+ApiConfig.changePassword;
+       var requestUrl=Uri.http(ApiConfig.baseUrl, accountInfoUrl);
+       var body=model.toJson();
+       var httpResponse = await http.post(
+         requestUrl,
+         headers: {
+           "Access-Control-Allow-Origin": "*",
+           "Authorization": "Bearer $token",
+           "Content-type":"application/json"
+         },
+           body: body);
+       return httpResponse.statusCode;
+     }
+     return 400;
    }
 }

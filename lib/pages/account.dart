@@ -4,8 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:from_css_color/from_css_color.dart';
 import 'package:leadsub_flutter_mobileapp/api_services/AccountInfoService.dart';
-import 'package:leadsub_flutter_mobileapp/model/User.dart';
-import 'package:leadsub_flutter_mobileapp/model/apiRequestModels/registrationModel.dart';
+import 'package:leadsub_flutter_mobileapp/model/apiRequestModels/changePasswordRequestModel.dart';
+import 'package:leadsub_flutter_mobileapp/model/apiResponseModels/accountInfoResponseModel.dart';
 import 'package:leadsub_flutter_mobileapp/pages/widgets/ChangePlanButton.dart';
 import 'package:leadsub_flutter_mobileapp/pages/widgets/accountStat.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,28 +23,33 @@ class Account extends StatefulWidget {
 class _AccountState extends State<Account> {
 
   final Menu _menu=Menu();
-  User user = User(displayName: '', email: '', password: '');
-  TextEditingController passController = TextEditingController();
+  final AccountService _accountService=AccountService();
+
+  late AccountInfoResponseModel model;
+
+  TextEditingController oldPassController = TextEditingController();
+  TextEditingController newPassword=TextEditingController();
+  TextEditingController confirmNewPassword=TextEditingController();
   
   
 
-  final Stream<User> accountInfoStream = (() {
-    late final StreamController<User> controller;
-    controller = StreamController<User>(
+  final Stream<AccountInfoResponseModel> accountInfoStream = (() {
+    late final StreamController<AccountInfoResponseModel> controller;
+    controller = StreamController<AccountInfoResponseModel>(
       onListen: () async {
         AccountInfoService accountInfoService = AccountInfoService();
-        User user =await accountInfoService.getUserData();
-        controller.add(user);
+        AccountInfoResponseModel model =await accountInfoService.getAccountInfo();
+        controller.add(model);
         await controller.close();
       },
     );
     return controller.stream;
   })();
 
-  StreamBuilder<User> _streamBuilder(){
-    return StreamBuilder<User>(
+  StreamBuilder<AccountInfoResponseModel> _streamBuilder(){
+    return StreamBuilder<AccountInfoResponseModel>(
         stream: accountInfoStream,
-        builder: (BuildContext context,AsyncSnapshot<User> snapshot){
+        builder: (BuildContext context,AsyncSnapshot<AccountInfoResponseModel> snapshot){
           Widget children=const Center(
             child: CircularProgressIndicator(),
           );
@@ -67,7 +72,7 @@ class _AccountState extends State<Account> {
               );
               break;
             case ConnectionState.done:
-              user = snapshot.data!;
+              model = snapshot.data!;
               children= _accountInfoW();
               break;
             case ConnectionState.none:
@@ -86,11 +91,11 @@ class _AccountState extends State<Account> {
         Column(
          children:[
            const SizedBox(height: 10),
-           Text('Привіт ${user.displayName}',style: const TextStyle(
+           Text('Привіт ${model.displayName}',style: const TextStyle(
              fontSize: 30,
              fontFamily: 'Roboto'
            )),
-           Text(user.email,style: const TextStyle(
+           Text(model.email,style: const TextStyle(
                fontSize: 24,
                fontFamily: 'Roboto'
            )),
@@ -106,9 +111,9 @@ class _AccountState extends State<Account> {
       ],
     ));
   }
-  Widget _blueButton(String title){
+  Widget _blueButton(String title,Function onPress){
     return TextButton(
-        onPressed: (){}, 
+        onPressed:(){onPress();},
         style: ButtonStyle(
             shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                 RoundedRectangleBorder(
@@ -147,27 +152,27 @@ class _AccountState extends State<Account> {
               fontFamily: 'Roboto',
             )),
             SizedBox(height: 10),
-            Text('Starter',style:TextStyle(
+            Text(model.packageName,style:TextStyle(
             fontSize: 26,
             fontFamily: 'Roboto'
             )),
             SizedBox(height: 13),
-            Text('Ціна 29\$ місяць',style:TextStyle(
+            Text('Ціна ${model.price}\$ місяць',style:TextStyle(
                 fontSize: 20,
                 fontFamily: 'Roboto'
             )),
             SizedBox(height: 10),
-            Text('Максимальна кількість підписників',style:TextStyle(
+            Text('Максимальна кількість підписників: ${model.maxSubscriptionsCount}',style:TextStyle(
                 fontSize: 15,
                 fontFamily: 'Roboto'
             )),
             SizedBox(height: 7),
-            Text('Максимальна кількість підписних сторінок',style:TextStyle(
+            Text('Максимальна кількість підписних сторінок: ${model.maxSubPagesCount}',style:TextStyle(
                 fontSize: 15,
                 fontFamily: 'Roboto'
             )),
             SizedBox(height:15),
-            _blueButton('Змінити план')
+            _blueButton('Змінити план',(){})
           ],
           
         ),
@@ -200,10 +205,10 @@ class _AccountState extends State<Account> {
             SizedBox(height: 13),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
-              children: const [
-                SizedBox(width: 30),
-                Text('Всього підписників:',style:TextStyle(
-                    fontSize: 20,
+              children: [
+                SizedBox(width: 15),
+                Text('Всього підписників: ${model.subscriptionsCount}',style:TextStyle(
+                    fontSize: 15,
                     fontFamily: 'Roboto'
                 )),
 
@@ -212,10 +217,10 @@ class _AccountState extends State<Account> {
             SizedBox(height: 8),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
-              children: const [
-                SizedBox(width: 30),
-                Text('Всього переглядів',style:TextStyle(
-                    fontSize: 20,
+              children: [
+                SizedBox(width: 15),
+                Text('Всього підписних сторінок: ${model.subPagesCount}',style:TextStyle(
+                    fontSize: 15,
                     fontFamily: 'Roboto'
                 ))
               ],
@@ -254,7 +259,7 @@ class _AccountState extends State<Account> {
                   width: 300.0,
                   height: 40,
                   child: TextField(
-                      controller: passController,
+                      controller: oldPassController,
                       obscureText: true,
                       decoration:InputDecoration(
                           isDense: true,
@@ -287,7 +292,7 @@ class _AccountState extends State<Account> {
                   width: 300.0,
                   height: 40,
                   child: TextField(
-                      controller: passController,
+                      controller: newPassword,
                       obscureText: true,
                       decoration:InputDecoration(
                           isDense: true,
@@ -320,7 +325,7 @@ class _AccountState extends State<Account> {
                   width: 300.0,
                   height: 40,
                   child: TextField(
-                      controller: passController,
+                      controller: confirmNewPassword,
                       obscureText: true,
                       decoration:InputDecoration(
                           isDense: true,
@@ -337,11 +342,66 @@ class _AccountState extends State<Account> {
                   ),
                 ),
                 SizedBox(height: 18),
-                _blueButton('Змінити пароль')
+                _blueButton('Змінити пароль',()async{
+                    final model=ChangePasswordRequestModel(
+                        confirmNewPassword: confirmNewPassword.text,
+                        newPassword: newPassword.text,
+                        confirmationOldPassword: oldPassController.text
+                    );
+                    int statusCode=await _accountService.changePassword(model);
+                    if(statusCode==200){
+                        _showSuccess();
+                    }
+                    else{
+                        _showPasswordValidation();
+                    }
+                })
               ],
             ),
           ),
         ));
+  }
+  void _showSuccess(){
+    showDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return AlertDialog(
+            title: const Text('Повідомлення'),
+            content: const Text('Пароль успішно змінено!'),
+            actions:[
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    Navigator.pushNamedAndRemoveUntil(context,'/account', (route) => false);
+                  },
+                  child: const Text('ОК'))
+            ],
+          );
+        });
+  }
+  void _showPasswordValidation(){
+    showDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return AlertDialog(
+            title: const Icon(Icons.error,color: Colors.red,size: 50),
+            content: const Text('Невдалося змінити пароль!\n\n'
+                '1.Перевірте правильність старого паролю\n'
+                '2.Нові паролі мають співпадати\n'
+                '3.Перевірте наступні пункти:\n\n'
+                '-пароль має бути  не меньше 9 символів\n'
+                '-пароль має містити в собі цифри\n'
+                '-має бути наявна одна маленька літера\n'
+                '-має бути наявна одна велика літера\n'),
+            actions:[
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('ОК'))
+            ],
+          );
+        });
   }
 
   @override
