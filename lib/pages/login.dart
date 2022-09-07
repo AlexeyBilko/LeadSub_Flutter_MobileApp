@@ -221,7 +221,7 @@ class _LoginState extends State<Login> {
                                     primary: Colors.black,
                                     textStyle: const TextStyle(fontSize: 14)),
                                 onPressed: ()async {
-                                    const url = 'http://http://alexeyleadsub-001-site1.itempurl.com/Account/EnterEmail';
+                                    const url = 'http://alexeyleadsub-001-site1.itempurl.com/Account/EnterEmail';
                                     if (await canLaunch(url)) {
                                       await launch(url);
                                     } else {

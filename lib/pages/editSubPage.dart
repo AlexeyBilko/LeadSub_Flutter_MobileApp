@@ -406,6 +406,7 @@ class _EditSubPageStat extends State<EditSubPage>{
               style: TextButton.styleFrom(
                   padding: const EdgeInsets.all(16.0),
                   primary: Colors.white,
+                  minimumSize: Size(MediaQuery.of(context).size.width, 35),
                   textStyle: const TextStyle(fontSize: 20)),
               onPressed: ()async {
                   showDialog(
