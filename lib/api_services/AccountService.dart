@@ -13,7 +13,7 @@ class AccountService extends ChangeNotifier{
     final String _tokenUrl="/token";
     String? access_token;
 
-    Future<bool>sendVeryficationCode(RegistrationModel apiModel)async
+    Future<Map>sendVeryficationCode(RegistrationModel apiModel)async
     {
         var url=Uri.http(ApiConfig.baseUrl, ApiConfig.apiPath+ApiConfig.accountControllerPath+ApiConfig.confirmEmailPath);
         Map dictionary={
@@ -35,16 +35,44 @@ class AccountService extends ChangeNotifier{
         if(httpResponse.body.isNotEmpty)
         {
           final jsonResponse = jsonDecode(httpResponse.body);
-          final prefs = await SharedPreferences.getInstance();
-          prefs.setInt("verificationCode", jsonResponse['veryficationCode']);
+          if(httpResponse.statusCode==200)
+          {
+            final prefs = await SharedPreferences.getInstance();
+            prefs.setInt("verificationCode", jsonResponse['veryficationCode']);
 
-          prefs.setString("Email", apiModel.email);
-          prefs.setString("UserName", apiModel.userName);
-          prefs.setString("Password", apiModel.password);
-          prefs.setString("ConfirmPassword", apiModel.confirmPassword);
-          return true;
+            prefs.setString("Email", apiModel.email);
+            prefs.setString("UserName", apiModel.userName);
+            prefs.setString("Password", apiModel.password);
+            prefs.setString("ConfirmPassword", apiModel.confirmPassword);
+            return Map();
+          }
+          if(httpResponse.statusCode==400){
+            print(httpResponse.statusCode);
+            if(jsonResponse["errors"]!=null){
+              print(jsonResponse["errors"]);
+              return jsonResponse["errors"];
+            }
+            else{
+              List<String>strErrors=[];
+              if(jsonResponse["Password"]!=null){
+                for (int i = 0; i < jsonResponse["Password"].length; ++i) {
+                  strErrors.add(jsonResponse["Password"][i]);
+                }
+              }
+              if(jsonResponse["Email"]!=null){
+                for (int i = 0; i < jsonResponse["Email"].length; ++i) {
+                  strErrors.add(jsonResponse["Email"][i]);
+                }
+              }
+              Map errors={
+                "OtherErrors":strErrors
+              };
+              return errors;
+            }
+          }
         }
-        return false;
+        Map dict={"UnknownError":"Помилка серверу"};
+        return dict;
     }
     Future<Map<String,dynamic>>registration(int verificationCode)async
     {
@@ -77,7 +105,6 @@ class AccountService extends ChangeNotifier{
         return {};
     }
 
-
     Future<Map<String,dynamic>> login(String email,String password) async
     {
         var url=Uri.http(ApiConfig.baseUrl,ApiConfig.apiPath +ApiConfig.accountControllerPath +ApiConfig.getTokenPath);
@@ -94,7 +121,7 @@ class AccountService extends ChangeNotifier{
             "accept": "application/json",
             "Access-Control-Allow-Origin": "*"
           },);
-        if(httpResponse.body.isNotEmpty) {
+        if(httpResponse.statusCode==200) {
               final jsonResponse = jsonDecode(httpResponse.body);
               final prefs = await SharedPreferences.getInstance();
               prefs.setString('access_token', jsonResponse['access_token']);
@@ -103,7 +130,6 @@ class AccountService extends ChangeNotifier{
               print(jsonResponse['status']);
               jsonResponse['status'] = httpResponse.statusCode;
               print(jsonResponse['status']);
-
               return jsonResponse;
         }
         return {};

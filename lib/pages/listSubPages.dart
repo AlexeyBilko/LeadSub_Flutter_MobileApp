@@ -68,7 +68,25 @@ class _ListSubPagesState extends State<ListSubPages>{
               break;
             case ConnectionState.done:
               subPages=snapshot.data!;
-              children= _createListSubPages();
+              if(subPages.isEmpty){
+                  children=Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.note_alt_rounded,size: 80.0,color: fromCssColor('#3362DB')),
+                        const Text("У вас поки немає підписних сторінок",style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 23,
+                          fontWeight: FontWeight.w900,
+                          fontFamily: 'Arial'
+                        ),)
+                      ],
+                    ),
+                  );
+              }
+              else {
+                children= _createListSubPages();
+              }
               break;
             case ConnectionState.none:
               break;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:from_css_color/from_css_color.dart';
 import 'package:leadsub_flutter_mobileapp/pages/register.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../api_services/AccountService.dart';
@@ -146,24 +147,30 @@ class _LoginState extends State<Login> {
   }
 
   Widget _title() {
-    return RichText(
-      textAlign: TextAlign.center,
-      text: const TextSpan(
-          text: 'LeadSub\n',
-          style: TextStyle(
-            fontSize: 30,
-            fontWeight: FontWeight.w700,
-            color: Colors.indigo,
-          ),
-          children: [
-            TextSpan(
-                text: "Увійти в акаунт",
-                style: TextStyle(
-                  fontSize: 15.0,
-                  color: Colors.grey,
-                ))
-          ]),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children:[
+            const Text('Lead',
+              style: TextStyle(
+                  fontFamily: 'Arial',
+                  fontWeight: FontWeight.w900,
+                  fontSize: 35,
+                  color: Colors.black
+              ),),
+
+
+            Text('Sub', style:
+            TextStyle(
+                fontFamily: 'Arial',
+                fontWeight: FontWeight.w900,
+                fontSize: 35,
+                color: fromCssColor('#3362DB')
+            ),),
+      ] ,
     );
+
+
+
   }
 
   Widget _emailPasswordWidget() {

@@ -1,5 +1,5 @@
 class ApiConfig{
-    static const String baseUrl="alexeyleadsub-001-site1.itempurl.com";
+    static const String baseUrl="localhost:5000";
     static const String accountControllerPath="/account";
     static const String getTokenPath="/Token";
     static const String registrationPath="/UserRegistration";

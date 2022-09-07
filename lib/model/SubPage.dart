@@ -81,6 +81,6 @@ class SubPage {
   }
 
   String creationDateToString(){
-    return '${creationDate!.day}.${creationDate!.month}.${creationDate!.year}';
+    return '${(creationDate!.day>=10?"${creationDate!.day}":"0${creationDate!.day}")}.${(creationDate!.month>=10?"${creationDate!.month}":"0${creationDate!.month}")}.${creationDate!.year}';
   }
 }

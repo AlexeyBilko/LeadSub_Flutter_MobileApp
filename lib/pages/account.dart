@@ -9,6 +9,7 @@ import 'package:leadsub_flutter_mobileapp/model/apiResponseModels/accountInfoRes
 import 'package:leadsub_flutter_mobileapp/pages/widgets/ChangePlanButton.dart';
 import 'package:leadsub_flutter_mobileapp/pages/widgets/accountStat.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../api_services/AccountService.dart';
 import 'dart:convert';
 
@@ -173,7 +174,16 @@ class _AccountState extends State<Account> {
                 fontFamily: 'Roboto'
             )),
             SizedBox(height:15),
-            _blueButton('Змінити план',(){})
+            _blueButton('Змінити план',()async{
+
+              const url = 'http://alexeyleadsub-001-site1.itempurl.com/Plans/Index';
+              if (await canLaunch(url)) {
+              await launch(url);
+              } else {
+              throw 'Could not launch $url';
+              }
+
+            })
           ],
           
         ),
@@ -299,7 +309,7 @@ class _AccountState extends State<Account> {
                           isDense: true,
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(50.0),
-                              borderSide: BorderSide(
+                              borderSide: const BorderSide(
                                 width: 0,
                                 style: BorderStyle.none,
                               )
@@ -332,7 +342,7 @@ class _AccountState extends State<Account> {
                           isDense: true,
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(50.0),
-                              borderSide: BorderSide(
+                              borderSide:const BorderSide(
                                 width: 0,
                                 style: BorderStyle.none,
                               )

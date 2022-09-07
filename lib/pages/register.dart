@@ -15,6 +15,12 @@ class Register extends StatefulWidget {
 class _RegisterState extends State<Register> {
 
   final AccountService _accountService=AccountService();
+  
+  String _emailValidation="";
+  String _passwordValidation="";
+  String _confirmPasswordValidation="";
+  String _userNameValidation="";
+
 
   final TextEditingController name = TextEditingController();
   final TextEditingController email = TextEditingController();
@@ -46,12 +52,22 @@ class _RegisterState extends State<Register> {
                   filled: true),
             ),
           ),
+          Visibility(
+            visible: _userNameValidation==""?false:true,
+              child: Text(_userNameValidation,
+          style:const TextStyle(
+          color: Colors.red,
+              fontSize: 14,
+              fontFamily: 'Roboto'
+          ))
+          )
         ],
       ),
     );
   }
 
   Widget _entryEmailField(String title, {bool isPassword = false}) {
+    //String errors=
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 20),
       child: Column(
@@ -75,6 +91,17 @@ class _RegisterState extends State<Register> {
                   filled: true),
             ),
           ),
+          Visibility(
+            visible: _emailValidation==""?false:true,
+            child: Text(
+              _emailValidation,
+              style:const TextStyle(
+                color: Colors.red,
+                fontSize: 14,
+                fontFamily: 'Roboto'
+              )
+          ),
+          )
         ],
       ),
     );
@@ -99,12 +126,22 @@ class _RegisterState extends State<Register> {
               controller: password,
               obscureText: isPassword,
               decoration: const InputDecoration(
-                  hintText: "8 contains with 1 char and 1 digit",
                   border: InputBorder.none,
                   fillColor: Color(0xfff3f3f4),
                   filled: true),
             ),
           ),
+          Visibility(
+              visible: _passwordValidation==""?false:true,
+              child: Text(
+                  _passwordValidation,
+                  style:const TextStyle(
+                      color: Colors.red,
+                      fontSize: 14,
+                      fontFamily: 'Roboto'
+                  )
+              ),
+          )
         ],
       ),
     );
@@ -128,18 +165,26 @@ class _RegisterState extends State<Register> {
               controller: confirmPassword,
               obscureText: isPassword,
               decoration: const InputDecoration(
-                  hintText: "8 contains with 1 char and 1 digit",
                   border: InputBorder.none,
                   fillColor: Color(0xfff3f3f4),
                   filled: true),
             ),
           ),
+          Visibility(
+            visible: _confirmPasswordValidation==""?false:true,
+            child: Text(
+                _confirmPasswordValidation,
+                style:const TextStyle(
+                    color: Colors.red,
+                    fontSize: 14,
+                    fontFamily: 'Roboto'
+                )
+            ),
+          )
         ],
       ),
     );
   }
-
-
 
 
 
@@ -170,16 +215,21 @@ class _RegisterState extends State<Register> {
           TextButton(
             style: TextButton.styleFrom(
               minimumSize: Size(MediaQuery.of(context).size.width, 40)),
-            onPressed: ()async {
+            onPressed: ()async{
               //  Navigator.push(context, MaterialPageRoute(builder: (context) => OtpPage()));
               RegistrationModel model=RegistrationModel(email: email.text, userName: name.text, password:password.text, confirmPassword: confirmPassword.text);
-              bool res=await _accountService.sendVeryficationCode(model);
-              if(res) {
-                Navigator.pushNamed(context, '/confirmEmail');
-              }
+                Map errors= await _accountService.sendVeryficationCode(model);
+                if(errors.isEmpty){
+                  Navigator.pushNamed(context, '/confirmEmail');
+                }
+                else{
+                  _createValidationStrings(errors);
+                  _showModalError(errors);
+                }
             },
+
             child: const Text(
-              'Next',
+              'Далі',
               style: TextStyle(fontSize: 20, color: Colors.white),
             ),
           )
@@ -193,7 +243,7 @@ class _RegisterState extends State<Register> {
       textAlign: TextAlign.center,
       text: const TextSpan(children: [
         TextSpan(
-          text: 'Create Your Account\n',
+          text: 'Створіть свій власний акаунт\n',
           style: TextStyle(
               color: Color(0xff000000), fontSize: 24, fontFamily: 'Arial', fontWeight: FontWeight.bold),
 
@@ -207,14 +257,119 @@ class _RegisterState extends State<Register> {
       margin: EdgeInsets.symmetric(vertical: 4, horizontal: 24),
       child: Column(
         children: <Widget>[
-          _entryNameField("Name"),
-          _entryEmailField("Email"),
-          _entryPasswordField("Password", isPassword: true),
-          _confirmPasswordField("Confirmed Password", isPassword: true),
+          _entryNameField("Ім'я"),
+          _entryEmailField("Електронна пошта"),
+          _entryPasswordField("Пароль", isPassword: true),
+          _confirmPasswordField("Підтвердіть пароль", isPassword: true),
         ],
       ),
     );
   }
+
+  void _showModalError(Map errors){
+    if(errors["OtherErrors"]!=null) {
+      String errorText="";
+      for (int i = 0; i < errors["OtherErrors"].length; ++i) {
+          errorText+="${i+1}. ${errors["OtherErrors"][i]}\n";
+      }
+
+      showDialog(
+          context: context,
+          builder: (BuildContext ctx) {
+            return AlertDialog(
+              title: const Text('Повідомлення'),
+              content: Text(errorText),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('ОК'))
+              ],
+            );
+          });
+    }
+  }
+
+  void _createValidationStrings(Map errors){
+    if(errors["Email"]!=null) {
+      if (errors["Email"].length != 0 && errors["Email"].isNotEmpty) {
+        setState(() {
+          _emailValidation = "";
+          for (int i = 0; i < errors["Email"].length; ++i) {
+            _emailValidation += "${errors["Email"][i]}\n";
+          }
+        });
+      }
+    }
+    else{
+      setState((){
+        _emailValidation="";
+      });
+    }
+
+
+    if(errors["UserName"]!=null) {
+      if (errors["UserName"].length != 0 && errors["UserName"].isNotEmpty) {
+        setState(() {
+          _userNameValidation = "";
+          for (int i = 0; i < errors["UserName"].length; ++i) {
+            _userNameValidation += "${errors["UserName"][i]}\n";
+          }
+        });
+      }
+    }
+    else{
+      setState((){
+        _userNameValidation="";
+      });
+    }
+
+
+    if(errors["Password"]!=null) {
+      if (errors["Password"].length != 0 && errors["Password"].isNotEmpty) {
+        setState(() {
+          _passwordValidation = "";
+          for (int i = 0; i < errors["Password"].length; ++i) {
+            _passwordValidation += "${errors["Password"][i]}\n";
+          }
+        });
+      }
+    }
+    else{
+      setState((){
+        _passwordValidation="";
+      });
+    }
+
+
+
+
+
+    if(errors["ConfirmPassword"]!=null) {
+      if (errors["ConfirmPassword"].length != 0 && errors["ConfirmPassword"].isNotEmpty) {
+        setState(() {
+          _confirmPasswordValidation = "";
+          for (int i = 0; i < errors["ConfirmPassword"].length; ++i) {
+            _confirmPasswordValidation += "${errors["ConfirmPassword"][i]}\n";
+          }
+        });
+      }
+    }
+    else{
+      setState((){
+        _confirmPasswordValidation="";
+      });
+    }
+
+
+
+
+
+  }
+
+
+
 
   @override
   Widget build(BuildContext context) {
