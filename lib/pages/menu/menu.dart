@@ -73,18 +73,6 @@ class Menu {
 
           ListTile(
             contentPadding: EdgeInsets.all(10),
-            leading: Icon(Icons.supervisor_account,size: 30.0,color: fromCssColor('#3362DB')),
-            title: const Text('Новий акаунт',
-                style:TextStyle(
-                fontFamily: 'Arial', fontWeight: FontWeight.w900, fontSize: 16, color: Colors.black)
-            ),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.pushNamedAndRemoveUntil(context, '/newaccount', (route) => true);
-            },
-          ),
-          ListTile(
-            contentPadding: EdgeInsets.all(10),
             leading: Icon(Icons.add_box,size: 30.0,color: fromCssColor('#3362DB')),
             title: const Text('Створити сторінку',
                 style:TextStyle(

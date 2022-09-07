@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:leadsub_flutter_mobileapp/pages/addSubPage.dart';
 import 'package:leadsub_flutter_mobileapp/pages/confirmEmail.dart';
+import 'package:leadsub_flutter_mobileapp/pages/editSubPage.dart';
 import 'package:leadsub_flutter_mobileapp/pages/register.dart';
 import 'package:leadsub_flutter_mobileapp/pages/login.dart';
 

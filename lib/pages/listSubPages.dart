@@ -1,11 +1,14 @@
 
 
 import 'dart:async';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:from_css_color/from_css_color.dart';
 import 'package:leadsub_flutter_mobileapp/api_services/subPagesService.dart';
+import 'package:leadsub_flutter_mobileapp/pages/editSubPage.dart';
 import 'package:leadsub_flutter_mobileapp/pages/menu/menu.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../api_services/AccountService.dart';
 import '../model/SubPage.dart';
@@ -23,6 +26,8 @@ class _ListSubPagesState extends State<ListSubPages>{
   static final SubPagesService _subPagesService=SubPagesService();
   AccountService service=AccountService();
   List<SubPage>subPages=List.empty();
+
+  SubPagesService subPagesService=SubPagesService();
 
   final Stream<List<SubPage>> _subPagesStream = (() {
     late final StreamController<List<SubPage>> controller;
@@ -82,6 +87,59 @@ class _ListSubPagesState extends State<ListSubPages>{
       );
   }
   Widget _subPageCard(int index){
+
+    void _delete(BuildContext context) {
+      showDialog(
+          context: context,
+          builder: (BuildContext ctx) {
+            return AlertDialog(
+              title: const Text('Підтвердіть'),
+              content: const Text('Ви хочете видалити дану сторінку?'),
+              actions: [
+                // The "Yes" button
+                TextButton(
+                    onPressed: () {
+                      subPagesService.deleteSubPages(subPages[index].id);// Close the dialog
+                      Navigator.of(context).pop();
+                      Future.delayed(const Duration(seconds: 3));
+                      Navigator.pushNamedAndRemoveUntil(context, '/listSubPages', (route) => false);
+                    },
+                    child: const Text('Так')),
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Ні'))
+              ],
+            );
+          });
+    }
+
+    void _edit(BuildContext context) {
+      showDialog(
+          context: context,
+          builder: (BuildContext ctx) {
+            return AlertDialog(
+              title: const Text('Підтвердіть'),
+              content: const Text('Ви хочете редагувати дану сторінку?'),
+              actions: [
+                // The "Yes" button
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => EditSubPage(subpage: subPages[index])), (route) => false);
+                    },
+                    child: const Text('Так')),
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Ні'))
+              ],
+            );
+          });
+    }
+
     return Card(
       key: Key(subPages[index].id.toString()),
       shape: RoundedRectangleBorder(
@@ -220,15 +278,23 @@ class _ListSubPagesState extends State<ListSubPages>{
            mainAxisAlignment: MainAxisAlignment.center,
             children: [
 
-              IconButton(onPressed: (){}, icon: const Icon(Icons.remove_red_eye_outlined,color: Colors.black),iconSize: 35.0,padding: const EdgeInsets.all(20),),
-              IconButton(onPressed: (){}, icon: const Icon(Icons.edit,color: Colors.black),iconSize: 35.0,padding:const EdgeInsets.all(20)),
-              IconButton(onPressed: (){}, icon: const Icon(Icons.delete_forever, color: Colors.black),iconSize: 35.0,padding:const EdgeInsets.all(20))
+              IconButton(onPressed: () async {
+                String url = 'http://alexeyleadsub-001-site1.itempurl.com/page?id=${subPages[index].id}';
+                if (await canLaunch(url)) {
+                await launch(url);
+                } else {
+                throw 'Could not launch $url';
+                }
+              }, icon: const Icon(Icons.remove_red_eye_outlined,color: Colors.black),iconSize: 35.0,padding: const EdgeInsets.all(20),),
+              IconButton(onPressed: (){ _edit(context); }, icon: const Icon(Icons.edit,color: Colors.black),iconSize: 35.0,padding:const EdgeInsets.all(20)),
+              IconButton(onPressed: (){ _delete(context); }, icon: const Icon(Icons.delete_forever, color: Colors.black),iconSize: 35.0,padding:const EdgeInsets.all(20))
             ],
           )
 
         ],
       )
     );
+
   }
 
 

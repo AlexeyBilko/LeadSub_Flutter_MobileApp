@@ -168,6 +168,8 @@ class _RegisterState extends State<Register> {
       child: Column(
         children: [
           TextButton(
+            style: TextButton.styleFrom(
+              minimumSize: Size(MediaQuery.of(context).size.width, 40)),
             onPressed: ()async {
               //  Navigator.push(context, MaterialPageRoute(builder: (context) => OtpPage()));
               RegistrationModel model=RegistrationModel(email: email.text, userName: name.text, password:password.text, confirmPassword: confirmPassword.text);

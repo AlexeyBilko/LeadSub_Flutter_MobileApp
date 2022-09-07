@@ -80,7 +80,7 @@ class _AccountState extends State<Account> {
 
 
   Widget _accountInfoW(){
-    return Row(
+    return SingleChildScrollView( child: Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Column(
@@ -104,7 +104,7 @@ class _AccountState extends State<Account> {
          ]
         )
       ],
-    );
+    ));
   }
   Widget _blueButton(String title){
     return TextButton(
