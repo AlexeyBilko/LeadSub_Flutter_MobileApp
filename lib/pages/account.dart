@@ -164,12 +164,12 @@ class _AccountState extends State<Account> {
                 fontFamily: 'Roboto'
             )),
             SizedBox(height: 10),
-            Text('Максимальна кількість підписників: ${model.maxSubscriptionsCount}',style:TextStyle(
+            Text(model.maxSubscriptionsCount != 0 ? 'Максимальна кількість підписників: ${model.maxSubscriptionsCount}' : 'Необмежена кількість підписників',style:TextStyle(
                 fontSize: 15,
                 fontFamily: 'Roboto'
             )),
             SizedBox(height: 7),
-            Text('Максимальна кількість підписних сторінок: ${model.maxSubPagesCount}',style:TextStyle(
+            Text(model.maxSubPagesCount != 0 ? 'Максимальна кількість підписних сторінок: ${model.maxSubPagesCount}' : 'Необмежена кількість підписних сторінок',style:TextStyle(
                 fontSize: 15,
                 fontFamily: 'Roboto'
             )),

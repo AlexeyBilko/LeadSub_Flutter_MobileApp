@@ -118,8 +118,8 @@ class _ListSubPagesState extends State<ListSubPages>{
                 TextButton(
                     onPressed: () {
                       subPagesService.deleteSubPages(subPages[index].id);// Close the dialog
+                      Future.delayed(const Duration(seconds: 5));
                       Navigator.of(context).pop();
-                      Future.delayed(const Duration(seconds: 3));
                       Navigator.pushNamedAndRemoveUntil(context, '/listSubPages', (route) => false);
                     },
                     child: const Text('Так')),
